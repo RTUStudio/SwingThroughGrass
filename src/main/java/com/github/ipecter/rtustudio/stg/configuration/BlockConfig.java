@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-public class BlockConfig extends RSConfiguration {
+public class BlockConfig extends RSConfiguration<SwingThroughGrass> {
 
-    private final SwingThroughGrass plugin;
+    private boolean collidable = false;
 
     private boolean destroy = false;
 
@@ -21,12 +21,14 @@ public class BlockConfig extends RSConfiguration {
 
     public BlockConfig(SwingThroughGrass plugin) {
         super(plugin, "Block.yml", null);
-        this.plugin = plugin;
         setup(this);
     }
 
     private void init() {
-        destroy = getBoolean("destroy", false, """
+        collidable = getBoolean("collidable", collidable, """
+                Allow ignoring collidable blocks
+                충돌가능한 블럭을 무시하도록 허용합니다""");
+        destroy = getBoolean("destroy", destroy, """
                 Break block when player swings
                 플레이어가 공격시 블럭을 파괴합니다""");
         String modeStr = getString("mode", "BLACKLIST", """
@@ -40,8 +42,8 @@ public class BlockConfig extends RSConfiguration {
             Material material = Material.getMaterial(str);
             if (material != null) materials.add(material);
             else {
-                plugin.console("<red>" + str + " is not a valid material</red>");
-                plugin.console("<red>" + str + "은(는) 올바른 메터리얼이 아닙니다</red>");
+                getPlugin().console("<red>" + str + " is not a valid material</red>");
+                getPlugin().console("<red>" + str + "은(는) 올바른 메터리얼이 아닙니다</red>");
             }
         }
     }

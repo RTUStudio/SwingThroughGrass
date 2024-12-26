@@ -5,7 +5,7 @@ import com.github.ipecter.rtustudio.stg.configuration.BlockConfig;
 import kr.rtuserver.framework.bukkit.api.command.RSCommand;
 import kr.rtuserver.framework.bukkit.api.command.RSCommandData;
 
-public class Command extends RSCommand {
+public class Command extends RSCommand<SwingThroughGrass> {
 
     private final BlockConfig blockConfig;
 
