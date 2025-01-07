@@ -20,6 +20,6 @@ public class SwingThroughGrass extends RSPlugin {
         blockConfig = new BlockConfig(this);
 
         registerEvent(new PlayerInteract(this));
-        registerCommand(new Command(this));
+        registerCommand(new Command(this), true);
     }
 }

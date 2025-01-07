@@ -10,7 +10,7 @@ public class Command extends RSCommand<SwingThroughGrass> {
     private final BlockConfig blockConfig;
 
     public Command(SwingThroughGrass plugin) {
-        super(plugin, "stg", true);
+        super(plugin, "stg");
         this.blockConfig = plugin.getBlockConfig();
     }
 
