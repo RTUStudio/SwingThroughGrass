@@ -11,13 +11,10 @@ import java.util.List;
 @Getter
 public class BlockConfig extends RSConfiguration<SwingThroughGrass> {
 
-    private boolean collidable = false;
-
-    private boolean destroy = false;
-
-    private Mode mode;
-
     private final List<Material> materials = new ArrayList<>();
+    private boolean collidable = false;
+    private boolean destroy = false;
+    private Mode mode;
 
     public BlockConfig(SwingThroughGrass plugin) {
         super(plugin, "Block.yml", null);

@@ -16,7 +16,7 @@ public class Command extends RSCommand<SwingThroughGrass> {
 
     @Override
     protected void reload(RSCommandData data) {
-       blockConfig.reload();
+        blockConfig.reload();
     }
 
 }
