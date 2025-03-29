@@ -1,4 +1,4 @@
-package com.github.ipecter.rtustudio.stg.commands;
+package com.github.ipecter.rtustudio.stg.command;
 
 import com.github.ipecter.rtustudio.stg.SwingThroughGrass;
 import com.github.ipecter.rtustudio.stg.configuration.BlockConfig;

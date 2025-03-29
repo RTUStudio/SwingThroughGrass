@@ -1,8 +1,8 @@
 package com.github.ipecter.rtustudio.stg;
 
-import com.github.ipecter.rtustudio.stg.commands.Command;
+import com.github.ipecter.rtustudio.stg.command.Command;
 import com.github.ipecter.rtustudio.stg.configuration.BlockConfig;
-import com.github.ipecter.rtustudio.stg.listeners.PlayerInteract;
+import com.github.ipecter.rtustudio.stg.listener.PlayerInteract;
 import kr.rtuserver.framework.bukkit.api.RSPlugin;
 import lombok.Getter;
 

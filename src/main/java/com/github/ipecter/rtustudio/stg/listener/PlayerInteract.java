@@ -1,4 +1,4 @@
-package com.github.ipecter.rtustudio.stg.listeners;
+package com.github.ipecter.rtustudio.stg.listener;
 
 import com.github.ipecter.rtustudio.stg.SwingThroughGrass;
 import com.github.ipecter.rtustudio.stg.configuration.BlockConfig;
