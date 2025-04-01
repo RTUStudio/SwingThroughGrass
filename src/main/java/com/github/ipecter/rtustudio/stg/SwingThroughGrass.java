@@ -1,6 +1,6 @@
 package com.github.ipecter.rtustudio.stg;
 
-import com.github.ipecter.rtustudio.stg.command.Command;
+import com.github.ipecter.rtustudio.stg.command.MainCommand;
 import com.github.ipecter.rtustudio.stg.configuration.BlockConfig;
 import com.github.ipecter.rtustudio.stg.listener.PlayerInteract;
 import kr.rtuserver.framework.bukkit.api.RSPlugin;
@@ -20,6 +20,6 @@ public class SwingThroughGrass extends RSPlugin {
         blockConfig = new BlockConfig(this);
 
         registerEvent(new PlayerInteract(this));
-        registerCommand(new Command(this), true);
+        registerCommand(new MainCommand(this), true);
     }
 }

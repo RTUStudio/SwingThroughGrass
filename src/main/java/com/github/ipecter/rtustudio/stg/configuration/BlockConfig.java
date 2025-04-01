@@ -1,7 +1,7 @@
 package com.github.ipecter.rtustudio.stg.configuration;
 
 import com.github.ipecter.rtustudio.stg.SwingThroughGrass;
-import kr.rtuserver.framework.bukkit.api.config.RSConfiguration;
+import kr.rtuserver.framework.bukkit.api.configuration.RSConfiguration;
 import lombok.Getter;
 import org.bukkit.Material;
 
