@@ -1,15 +1,16 @@
 package com.github.ipecter.rtustudio.stg.listener;
 
+import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
-import org.bukkit.Location;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
@@ -20,7 +21,7 @@ public class PlayerInteractEventFactory {
     static {
         try {
             Class<?> clazz = PlayerInteractEvent.class;
-            Class<?>[] newerParams = new Class<?>[] {
+            Class<?>[] newerParams = new Class<?>[]{
                     Player.class,
                     Action.class,
                     ItemStack.class,
@@ -33,7 +34,7 @@ public class PlayerInteractEventFactory {
         } catch (NoSuchMethodException ignored) {
             Class<?> clazz = PlayerInteractEvent.class;
             try {
-                Class<?>[] olderParams = new Class<?>[] {
+                Class<?>[] olderParams = new Class<?>[]{
                         Player.class,
                         Action.class,
                         ItemStack.class,

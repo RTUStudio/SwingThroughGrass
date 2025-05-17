@@ -3,7 +3,7 @@ package com.github.ipecter.rtustudio.stg.listener;
 import com.github.ipecter.rtustudio.stg.SwingThroughGrass;
 import com.github.ipecter.rtustudio.stg.configuration.BlockConfig;
 import kr.rtuserver.framework.bukkit.api.listener.RSListener;
-import kr.rtuserver.framework.bukkit.api.utility.platform.MinecraftVersion;
+import kr.rtuserver.framework.bukkit.api.platform.MinecraftVersion;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -47,7 +47,7 @@ public class PlayerInteract extends RSListener<SwingThroughGrass> {
 
             Player player = e.getPlayer();
             RayTraceResult result;
-            if (isPaper && !player.isInsideVehicle()) {
+            if (isPaper && !player.isInsideVehicle() && MinecraftVersion.isSupport("1.19.3")) {
                 result = player.rayTraceEntities(3, true);
             } else {
                 result = player.getWorld().rayTrace(player.getEyeLocation(), player.getLocation().getDirection(),
