@@ -6,7 +6,6 @@ import kr.rtuserver.framework.bukkit.api.listener.RSListener;
 import kr.rtuserver.framework.bukkit.api.utility.platform.MinecraftVersion;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -20,9 +19,12 @@ public class PlayerInteract extends RSListener<SwingThroughGrass> {
 
     private final boolean isPaper = MinecraftVersion.isPaper();
 
+    private final boolean newerVersion;
+
     public PlayerInteract(SwingThroughGrass plugin) {
         super(plugin);
         this.blockConfig = plugin.getBlockConfig();
+        this.newerVersion = MinecraftVersion.isSupport("1.21");
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -54,7 +56,7 @@ public class PlayerInteract extends RSListener<SwingThroughGrass> {
             }
 
             if (result != null && result.getHitEntity() != null) {
-                PlayerInteractEvent event = new PlayerInteractEvent(e.getPlayer(), e.getAction(), e.getItem(), null, BlockFace.SOUTH, e.getHand(), result.getHitPosition().toLocation(player.getWorld()));
+                PlayerInteractEvent event = PlayerInteractEventFactory.create(newerVersion, e, result, player);
                 if (event.callEvent()) player.attack(result.getHitEntity());
                 if (!blockConfig.isDestroy()) e.setCancelled(true);
             }
