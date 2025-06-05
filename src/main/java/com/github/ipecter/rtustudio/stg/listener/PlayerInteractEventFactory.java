@@ -16,52 +16,56 @@ import java.lang.reflect.InvocationTargetException;
 
 public class PlayerInteractEventFactory {
 
-    private static Constructor<?> constructor;
+    private static final Constructor<? extends PlayerInteractEvent> CONSTRUCTOR;
+    private static final boolean IS_NEW_API;
+    private static final BlockFace DEFAULT_BLOCK_FACE = BlockFace.SOUTH;
+    private static final Action DEFAULT_ACTION = Action.LEFT_CLICK_AIR;
 
     static {
+        Constructor<? extends PlayerInteractEvent> newConstructor = null;
+        boolean isNewApi = false;
+        
         try {
-            Class<?> clazz = PlayerInteractEvent.class;
-            Class<?>[] newerParams = new Class<?>[]{
-                    Player.class,
-                    Action.class,
-                    ItemStack.class,
-                    Block.class,
-                    BlockFace.class,
-                    EquipmentSlot.class,
-                    Vector.class
-            };
-            constructor = clazz.getConstructor(newerParams);
-        } catch (NoSuchMethodException ignored) {
-            Class<?> clazz = PlayerInteractEvent.class;
+            newConstructor = PlayerInteractEvent.class.getConstructor(
+                Player.class, Action.class, ItemStack.class, Block.class, 
+                BlockFace.class, EquipmentSlot.class, Vector.class
+            );
+            isNewApi = true;
+        } catch (NoSuchMethodException ignored) {}
+        
+        if (newConstructor == null) {
             try {
-                Class<?>[] olderParams = new Class<?>[]{
-                        Player.class,
-                        Action.class,
-                        ItemStack.class,
-                        Block.class,
-                        BlockFace.class,
-                        EquipmentSlot.class,
-                        Location.class
-                };
-                constructor = clazz.getConstructor(olderParams);
-            } catch (NoSuchMethodException exception) {
-                exception.printStackTrace();
+                newConstructor = PlayerInteractEvent.class.getConstructor(
+                    Player.class, Action.class, ItemStack.class, Block.class, 
+                    BlockFace.class, EquipmentSlot.class, Location.class
+                );
+            } catch (NoSuchMethodException ex) {
+                throw new IllegalStateException("No valid PlayerInteractEvent constructor found", ex);
             }
         }
+        
+        CONSTRUCTOR = newConstructor;
+        IS_NEW_API = isNewApi;
     }
 
-    public static PlayerInteractEvent create(boolean newerVersion, PlayerInteractEvent e, RayTraceResult result, Player player) {
+    public static PlayerInteractEvent create(PlayerInteractEvent originalEvent, RayTraceResult rayTraceResult) {
         try {
-            Object[] params;
-            if (newerVersion) {
-                params = new Object[]{e.getPlayer(), Action.LEFT_CLICK_AIR, e.getItem(), null, BlockFace.SOUTH, e.getHand(), result.getHitPosition()};
-            } else {
-                params = new Object[]{e.getPlayer(), Action.LEFT_CLICK_AIR, e.getItem(), null, BlockFace.SOUTH, e.getHand(), result.getHitPosition().toLocation(player.getWorld())};
-            }
-            return (PlayerInteractEvent) constructor.newInstance(params);
+            final Player player = originalEvent.getPlayer();
+            final Object locationParam = IS_NEW_API ? 
+                rayTraceResult.getHitPosition() : 
+                rayTraceResult.getHitPosition().toLocation(player.getWorld());
+            
+            return CONSTRUCTOR.newInstance(
+                player,
+                DEFAULT_ACTION,
+                originalEvent.getItem(),
+                null,
+                DEFAULT_BLOCK_FACE,
+                originalEvent.getHand(),
+                locationParam
+            );
         } catch (IllegalAccessException | InvocationTargetException | InstantiationException ex) {
-            ex.printStackTrace();
-            return null;
+            throw new RuntimeException("Failed to create PlayerInteractEvent", ex);
         }
     }
 }
