@@ -6,6 +6,7 @@ import kr.rtuserver.framework.bukkit.api.listener.RSListener;
 import kr.rtuserver.framework.bukkit.api.platform.MinecraftVersion;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -17,15 +18,21 @@ import org.bukkit.util.RayTraceResult;
 public class PlayerInteract extends RSListener<SwingThroughGrass> {
 
     private final BlockConfig blockConfig;
-
-    private final boolean isPaper = MinecraftVersion.isPaper();
-
-    private final boolean newerVersion;
+    private final boolean usePaperRayTrace;
+    private final boolean isNewVersion;
+    private final BlockCheckStrategy blockCheckStrategy;
 
     public PlayerInteract(SwingThroughGrass plugin) {
         super(plugin);
         this.blockConfig = plugin.getBlockConfig();
-        this.newerVersion = MinecraftVersion.isSupport("1.21");
+        boolean isPaper = MinecraftVersion.isPaper();
+        this.usePaperRayTrace = isPaper && MinecraftVersion.isSupport("1.19.3");
+        this.isNewVersion = MinecraftVersion.isSupport("1.21");
+        
+        // Selecting a block checking strategy based on server type
+        this.blockCheckStrategy = isPaper ? 
+            block -> block.getType().isSolid() || block.isCollidable() :
+            block -> block.getType().isSolid() || !block.isPassable();
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -34,33 +41,45 @@ public class PlayerInteract extends RSListener<SwingThroughGrass> {
         Block block = e.getClickedBlock();
         if (block == null) return;
 
-        if (!blockConfig.isCollidable()) {
-            if (isPaper) {
-                if (block.getType().isSolid() || block.isCollidable()) return;
-            } else {
-                if (block.getType().isSolid() || !block.isPassable()) return;
-            }
+        // Collision checking using the strategy
+        if (!blockConfig.isCollidable() && blockCheckStrategy.shouldSkip(block)) {
+            return;
         }
 
-        boolean pass = blockConfig.getMaterials().contains(block.getType());
-        if (blockConfig.getMode() == BlockConfig.Mode.BLACKLIST) pass = !pass;
-        if (!pass) return;
+        // Optimized material inspection
+        boolean inList = blockConfig.getMaterials().contains(block.getType());
+        if (blockConfig.getMode() == BlockConfig.Mode.BLACKLIST ? inList : !inList) {
+            return;
+        }
 
         Player player = e.getPlayer();
-        RayTraceResult result;
-        if (isPaper && !player.isInsideVehicle() && MinecraftVersion.isSupport("1.19.3")) {
-            result = player.rayTraceEntities(3, true);
-        } else {
-            result = player.getWorld().rayTrace(player.getEyeLocation(), player.getLocation().getDirection(),
-                    3, FluidCollisionMode.NEVER, true, 0,
-                    entity -> entity != player);
-        }
+        RayTraceResult result = performRayTrace(player);
         if (result == null) return;
-        if (result.getHitEntity() != null) {
-            PlayerInteractEvent event = PlayerInteractEventFactory.create(newerVersion, e, result, player);
-            if (callEvent(event)) {
-                player.attack(result.getHitEntity());
-                if (!blockConfig.isDestroy()) e.setCancelled(true);
+
+        Entity hitEntity = result.getHitEntity();
+        if (hitEntity != null) {
+            handleEntityHit(e, player, hitEntity);
+        }
+    }
+
+    private RayTraceResult performRayTrace(Player player) {
+        if (usePaperRayTrace && !player.isInsideVehicle()) {
+            return player.rayTraceEntities(3, true);
+        }
+        return player.getWorld().rayTrace(
+            player.getEyeLocation(), 
+            player.getLocation().getDirection(),
+            3, FluidCollisionMode.NEVER, true, 0,
+            entity -> entity != player
+        );
+    }
+
+    private void handleEntityHit(PlayerInteractEvent originalEvent, Player player, Entity entity) {
+        PlayerInteractEvent event = PlayerInteractEventFactory.create(isNewVersion, originalEvent, entity, player);
+        if (callEvent(event)) {
+            player.attack(entity);
+            if (!blockConfig.isDestroy()) {
+                originalEvent.setCancelled(true);
             }
         }
     }
@@ -68,5 +87,10 @@ public class PlayerInteract extends RSListener<SwingThroughGrass> {
     private boolean callEvent(PlayerInteractEvent event) {
         org.bukkit.Bukkit.getPluginManager().callEvent(event);
         return event.useItemInHand() != Event.Result.DENY;
+    }
+
+    @FunctionalInterface
+    private interface BlockCheckStrategy {
+        boolean shouldSkip(Block block);
     }
 }
