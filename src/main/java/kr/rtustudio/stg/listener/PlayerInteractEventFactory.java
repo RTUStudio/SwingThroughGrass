@@ -1,4 +1,4 @@
-package com.github.ipecter.rtustudio.stg.listener;
+package kr.rtustudio.stg.listener;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;

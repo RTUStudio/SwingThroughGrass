@@ -2,7 +2,7 @@ name: '${name}'
 version: '${version}'
 main: '${main}'
 description: 'RSPlugin - ${name}'
-api-version: 1.17
+api-version: '${api_version}'
 depend: [ RSFramework ]
 softdepend: [ ]
 authors: [ '${author}' ]

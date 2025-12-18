@@ -1,10 +1,12 @@
-package com.github.ipecter.rtustudio.stg.listener;
+package kr.rtustudio.stg.listener;
 
-import com.github.ipecter.rtustudio.stg.SwingThroughGrass;
-import com.github.ipecter.rtustudio.stg.configuration.BlockConfig;
-import kr.rtuserver.framework.bukkit.api.listener.RSListener;
-import kr.rtuserver.framework.bukkit.api.platform.MinecraftVersion;
+import kr.rtustudio.stg.SwingThroughGrass;
+import kr.rtustudio.stg.command.MainCommand;
+import kr.rtustudio.stg.configuration.BlockConfig;
+import kr.rtustudio.framework.bukkit.api.listener.RSListener;
+import kr.rtustudio.framework.bukkit.api.platform.MinecraftVersion;
 import org.bukkit.FluidCollisionMode;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -14,6 +16,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.RayTraceResult;
 
+@SuppressWarnings("unused")
 public class PlayerInteract extends RSListener<SwingThroughGrass> {
 
     private final BlockConfig blockConfig;
@@ -24,7 +27,7 @@ public class PlayerInteract extends RSListener<SwingThroughGrass> {
 
     public PlayerInteract(SwingThroughGrass plugin) {
         super(plugin);
-        this.blockConfig = plugin.getBlockConfig();
+        this.blockConfig = plugin.getConfiguration(BlockConfig.class);
         this.newerVersion = MinecraftVersion.isSupport("1.21");
     }
 
@@ -33,6 +36,7 @@ public class PlayerInteract extends RSListener<SwingThroughGrass> {
         if (e.getAction() != Action.LEFT_CLICK_BLOCK) return;
         Block block = e.getClickedBlock();
         if (block == null) return;
+        Material material = block.getType();
 
         if (!blockConfig.isCollidable()) {
             if (isPaper) {
@@ -42,11 +46,11 @@ public class PlayerInteract extends RSListener<SwingThroughGrass> {
             }
         }
 
-        boolean pass = blockConfig.getMaterials().contains(block.getType());
-        if (blockConfig.getMode() == BlockConfig.Mode.BLACKLIST) pass = !pass;
-        if (!pass) return;
+        boolean contains = blockConfig.getList().contains(material);
+        if ((blockConfig.getMode() == BlockConfig.Mode.WHITELIST) != contains) return;
 
         Player player = e.getPlayer();
+
         RayTraceResult result;
         if (isPaper && !player.isInsideVehicle() && MinecraftVersion.isSupport("1.19.3")) {
             result = player.rayTraceEntities(3, true);
