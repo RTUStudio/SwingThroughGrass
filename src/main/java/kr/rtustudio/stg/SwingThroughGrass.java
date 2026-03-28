@@ -1,10 +1,11 @@
 package kr.rtustudio.stg;
 
 import kr.rtustudio.framework.bukkit.api.RSPlugin;
+import kr.rtustudio.configurate.model.ConfigPath;
 import kr.rtustudio.stg.command.MainCommand;
 import kr.rtustudio.stg.configuration.BlockConfig;
 import kr.rtustudio.stg.configuration.serializer.MaterialSerializer;
-import kr.rtustudio.stg.listener.PlayerInteract;
+import kr.rtustudio.stg.handler.PlayerInteract;
 import lombok.Getter;
 import org.bukkit.Material;
 
@@ -14,10 +15,14 @@ public class SwingThroughGrass extends RSPlugin {
     private static SwingThroughGrass instance;
 
     @Override
-    public void enable() {
+    protected void load() {
         instance = this;
+    }
 
-        registerConfiguration(BlockConfig.class, "Block", builder -> {
+    @Override
+    protected void enable() {
+
+        registerConfiguration(BlockConfig.class, ConfigPath.of("Block"), builder -> {
             builder.register(Material.class, new MaterialSerializer());
         });
 

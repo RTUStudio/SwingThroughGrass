@@ -1,7 +1,9 @@
 package kr.rtustudio.stg.configuration;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
 import kr.rtustudio.configurate.objectmapping.meta.Comment;
-import kr.rtustudio.framework.bukkit.api.configuration.ConfigurationPart;
+import kr.rtustudio.configurate.model.ConfigurationPart;
 import lombok.Getter;
 import org.bukkit.Material;
 
@@ -32,7 +34,7 @@ public class BlockConfig extends ConfigurationPart {
             
             You can omit the namespace if it is minecraft
             네임스페이스가 minecraft인 경우 생략할 수 있습니다""")
-    private final List<Material> list = new ArrayList<>();
+    private final List<Material> list = new ObjectArrayList<>();
 
     public enum Mode {
         WHITELIST,

@@ -1,4 +1,4 @@
-package kr.rtustudio.stg.listener;
+package kr.rtustudio.stg.handler;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
