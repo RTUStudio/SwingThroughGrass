@@ -1,7 +1,7 @@
 package kr.rtustudio.stg;
 
-import kr.rtustudio.framework.bukkit.api.RSPlugin;
 import kr.rtustudio.configurate.model.ConfigPath;
+import kr.rtustudio.framework.bukkit.api.RSPlugin;
 import kr.rtustudio.stg.command.MainCommand;
 import kr.rtustudio.stg.configuration.BlockConfig;
 import kr.rtustudio.stg.configuration.serializer.MaterialSerializer;

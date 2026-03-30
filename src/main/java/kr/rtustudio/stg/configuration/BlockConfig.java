@@ -1,9 +1,7 @@
 package kr.rtustudio.stg.configuration;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-
-import kr.rtustudio.configurate.objectmapping.meta.Comment;
 import kr.rtustudio.configurate.model.ConfigurationPart;
+import kr.rtustudio.configurate.objectmapping.meta.Comment;
 import lombok.Getter;
 import org.bukkit.Material;
 
@@ -11,7 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@SuppressWarnings({"unused", "FieldMayBeFinal"})
+@SuppressWarnings({
+        "unused",
+        "CanBeFinal",
+        "FieldCanBeLocal",
+        "FieldMayBeFinal",
+        "InnerClassMayBeStatic"
+})
 public class BlockConfig extends ConfigurationPart {
 
     @Comment("""
@@ -34,7 +38,7 @@ public class BlockConfig extends ConfigurationPart {
             
             You can omit the namespace if it is minecraft
             네임스페이스가 minecraft인 경우 생략할 수 있습니다""")
-    private final List<Material> list = new ObjectArrayList<>();
+    private List<Material> list = new ArrayList<>();
 
     public enum Mode {
         WHITELIST,

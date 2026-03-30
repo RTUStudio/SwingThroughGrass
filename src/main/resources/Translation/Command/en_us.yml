@@ -1,0 +1,4 @@
+swingthroughgrass:
+  name: "SwingThroughGrass"
+  description: "SwingThroughGrass management command."
+  usage: "/swingthroughgrass"

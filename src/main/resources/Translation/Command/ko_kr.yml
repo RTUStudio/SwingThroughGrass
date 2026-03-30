@@ -1,0 +1,5 @@
+stg:
+  name: "풀베기"
+  description: "SwingThroughGrass 시스템 명령어입니다."
+  usage: "/stg"
+

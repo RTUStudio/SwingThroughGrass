@@ -1,10 +1,9 @@
 package kr.rtustudio.stg.handler;
 
-import kr.rtustudio.stg.SwingThroughGrass;
-import kr.rtustudio.stg.command.MainCommand;
-import kr.rtustudio.stg.configuration.BlockConfig;
 import kr.rtustudio.framework.bukkit.api.listener.RSListener;
 import kr.rtustudio.framework.bukkit.api.platform.MinecraftVersion;
+import kr.rtustudio.stg.SwingThroughGrass;
+import kr.rtustudio.stg.configuration.BlockConfig;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -59,13 +58,12 @@ public class PlayerInteract extends RSListener<SwingThroughGrass> {
                     3, FluidCollisionMode.NEVER, true, 0,
                     entity -> entity != player);
         }
-        if (result == null) return;
-        if (result.getHitEntity() != null) {
-            PlayerInteractEvent event = PlayerInteractEventFactory.create(newerVersion, e, result, player);
-            if (callEvent(event)) {
-                player.attack(result.getHitEntity());
-                if (!blockConfig.isDestroy()) e.setCancelled(true);
-            }
+        if (result == null || result.getHitEntity() == null) return;
+        
+        PlayerInteractEvent event = PlayerInteractEventFactory.create(newerVersion, e, result, player);
+        if (callEvent(event)) {
+            player.attack(result.getHitEntity());
+            if (!blockConfig.isDestroy()) e.setCancelled(true);
         }
     }
 
